@@ -199,7 +199,7 @@ bool SnakeGame::FatalCollision()
 	{
 		return true;
 	}
-	if (snake.size() == 3)
+	if (snake.size() == 2)
 	{
 		return true;
 	}
