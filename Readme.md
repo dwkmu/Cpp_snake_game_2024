@@ -31,3 +31,19 @@ SnakeGame.cpp 파일 21번째줄
 
 ####map4 <br>
 <img width="373" alt="map4" src="https://github.com/dwkmu/Cpp_snake_game_2024/assets/84307876/2cd351b1-4a7e-4e9e-b6ed-07c6c83dfd8c">
+
+<br>
+<br>
+<br>
+<br>
+<br>
+5월 21일
+<br>
+벽 초록색, 성장아이템 파랑, 감소아이템 빨강, 게임오버 색 변경 <br>
+뱀 머리 방향 별로 < , > , ^ , v 를 이용해서 해당 방향에 맞게 뱀 머리가 바뀜 <br>
+
+<br>
+####COLOR and Head
+<br>
+<img width="373" alt="COLOR HEAD" src="https://github.com/dwkmu/Cpp_snake_game_2024/assets/84307876/8d80dc52-d1f1-475a-bf09-5ca8eca9bc24">
+
