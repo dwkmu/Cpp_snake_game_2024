@@ -18,13 +18,12 @@ CharPosition::CharPosition()
 
 SnakeGame::SnakeGame()
 {
-	snake_map = new SnakeMap(1);
+	snake_map = new SnakeMap(0);
 	map = snake_map->getCurrentMap();
 	cou = 0;
 	cou2 = 999999999;
 	cou3 = 999999999;
 	partchar = 'O'; 
-	edgechar = (char)219; 
 	Growthchar = 'G';
 	poisonchar = 'P';
 	Growth.x = 0;
@@ -66,6 +65,9 @@ void SnakeGame::InitGameWindow()
 
 void SnakeGame::DrawWindow()
 {
+	initscr();
+	start_color();
+	init_pair(2, COLOR_GREEN, COLOR_GREEN);
 	for (int i = 0; i < maxheight; i++)
 	{
 		for (int j = 0; j < maxwidth; j++)
@@ -74,7 +76,9 @@ void SnakeGame::DrawWindow()
       if(map[i][j] == 1)
 			{
 				move(i,j);
-				addch(edgechar);
+				attron(COLOR_PAIR(2));
+				addch(' ');
+				attroff(COLOR_PAIR(2));
 			}
 			else
 			{
@@ -91,7 +95,7 @@ void SnakeGame::DrawSnake()
 	
 	for (int i = 0; i < 5; i++) 
 	{
-		snake.push_back(CharPosition(30+i, 10));
+		snake.push_back(CharPosition(30+i, 15));
 	}
 
 	for (int i = 0; i < snake.size(); i++)
@@ -141,8 +145,13 @@ void SnakeGame::PositionGrowth()
 		break;
 	}
 
-	move(Growth.y, Growth.x); 
+	move(Growth.y, Growth.x);
+	initscr();
+	start_color();
+	init_pair(3, COLOR_BLUE, COLOR_BLACK);
+	attron(COLOR_PAIR(3));
 	addch(Growthchar);
+	attroff(COLOR_PAIR(3));
 	refresh();
 
 }
@@ -183,8 +192,13 @@ void SnakeGame::PositionPoison()
 		poison.y = tmpy;
 		break;
 	}
-	move(poison.y, poison.x); 
+	move(poison.y, poison.x);
+	initscr();
+	start_color();
+	init_pair(4, COLOR_RED, COLOR_BLACK);
+	attron(COLOR_PAIR(4));
 	addch(poisonchar);
+	attroff(COLOR_PAIR(4));
 	refresh();
 
 }
@@ -282,18 +296,37 @@ void SnakeGame::MoveSnake()
 	}
 
 	if (direction == 'l')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x-1, snake[0].y)); } 
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x-1, snake[0].y));
+		move(snake[0].y, snake[0].x);
+		addch('<'); 
+		refresh();
+	} 
 	else if (direction == 'r')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x+1, snake[0].y)); }
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x+1, snake[0].y));
+		move(snake[0].y, snake[0].x);
+		addch('>'); 
+		refresh();
+	}
 	else if (direction == 'u')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y-1)); }
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y-1));
+		move(snake[0].y, snake[0].x);
+		addch('^'); 
+		refresh();
+	}
 	else if (direction == 'd')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y+1)); }
-
-
-	move(snake[0].y, snake[0].x);
-	addch(partchar); 
-	refresh();
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y+1));
+		move(snake[0].y, snake[0].x);
+		addch('v'); 
+	}
+	for (int i = 1; i<snake.size();i++){
+		move(snake[i].y, snake[i].x);
+		addch(partchar); 
+		refresh();
+	}
 	return;
 }
 
@@ -315,9 +348,14 @@ void SnakeGame::PlayGame()
 				}
         if (FatalCollision())
         {
-            move((maxheight-2)/2,(maxwidth-8)/2);
-            printw("GAME OVER");
-            break;
+					initscr();
+					start_color();
+					init_pair(1, COLOR_RED, COLOR_WHITE);
+					move((maxheight-2)/2,(maxwidth-8)/2);
+					attron(COLOR_PAIR(1));
+					printw("GAME OVER");
+					attroff(COLOR_PAIR(1));
+					break;
         }
 
         GetsGrowth();
