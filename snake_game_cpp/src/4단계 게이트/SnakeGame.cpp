@@ -20,7 +20,7 @@ CharPosition::CharPosition()
 SnakeGame::SnakeGame()
 {
 	snake_map = new SnakeMap(1);
-	snake_map->setCurrentMap(0);
+	snake_map->setCurrentMap(0); // 스테이지별 맵 초기화 후 재시작 필요
 	map = snake_map->getCurrentMap();
 
 	cou = 0;
@@ -66,8 +66,9 @@ SnakeGame::SnakeGame()
 	gate1.y=1;
 	gate2.x = 3;
 	gate2.y =1;
-	
-	
+
+
+	//5단계
 
 
 	refresh();	
@@ -89,11 +90,27 @@ void SnakeGame::InitGameWindow()
 	curs_set(0); 
 	maxheight = 30;
 	maxwidth = 60;
+
+
+
+
 	return; 
 }
 
+
+
+//아래는 5단계 추가내용임.
+
+
+
+
+
 void SnakeGame::DrawWindow()
 {	
+
+	initscr();
+	start_color();
+	init_pair(2,COLOR_GREEN,COLOR_GREEN);
 	for (int i = 0; i < maxheight; i++)
 	{
 		for (int j = 0; j < maxwidth; j++)
@@ -102,7 +119,9 @@ void SnakeGame::DrawWindow()
       if(map[i][j] == 1 || map[i][j]==2) 
 			{
 				move(i,j);
-				addch(edgechar);
+				attron(COLOR_PAIR(2));
+				addch(' ');
+				attroff(COLOR_PAIR(2));
 			}
 			else
 			{
@@ -170,7 +189,13 @@ void SnakeGame::PositionGrowth()
 	}
 
 	move(Growth.y, Growth.x); 
+	initscr();
+	start_color();
+	init_pair(3,COLOR_BLUE,COLOR_BLACK);
+	attron(COLOR_PAIR(3));
 	addch(Growthchar);
+	attroff(COLOR_PAIR(3));
+
 	refresh();
 
 }
@@ -212,7 +237,12 @@ void SnakeGame::PositionPoison()
 		break;
 	}
 	move(poison.y, poison.x); 
+	initscr();
+	start_color();
+	init_pair(4,COLOR_RED,COLOR_BLACK);
+	attron(COLOR_PAIR(4));
 	addch(poisonchar);
+	attroff(COLOR_PAIR(4));
 	refresh();
 
 }
@@ -301,7 +331,7 @@ void SnakeGame::MoveSnake()
 	}
 
 
-	if (!bEatsFruit)
+	if (!bEatsFruit || snake.size() >10) // snake size 10으로 설정
 	{
 		move(snake[snake.size()-1].y, snake[snake.size()-1].x); 
 		printw(" ");
@@ -317,24 +347,48 @@ void SnakeGame::MoveSnake()
 	}
 
 	if (direction == 'l')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x-1, snake[0].y)); } 
+	{
+		snake.insert(snake.begin(), CharPosition(snake[0].x-1, snake[0].y)); 
+		move(snake[0].y, snake[0].x);
+		addch('<'); 
+		refresh();
+
+	} 
 	else if (direction == 'r')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x+1, snake[0].y)); }
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x+1, snake[0].y)); 		
+		move(snake[0].y, snake[0].x);
+		addch('>'); 
+		refresh();		
+	}
 	else if (direction == 'u')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y-1)); }
+	{
+		snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y-1)); 
+		move(snake[0].y, snake[0].x);
+		addch('^'); 
+		refresh();	
+	}
 	else if (direction == 'd')
-	{ snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y+1)); }
+	{ 
+		snake.insert(snake.begin(), CharPosition(snake[0].x, snake[0].y+1)); 
+		
+		move(snake[0].y, snake[0].x);
+		addch('v'); 
+		refresh();		
+	}
+		for (int i = 1; i<snake.size();i++){
+		move(snake[i].y, snake[i].x);
+		addch(partchar); 
+		refresh();
+	}
 
 
 	
 
-	move(snake[0].y, snake[0].x);
-	addch(partchar); 
-	refresh();
 	return;
 }
 
-//아래 코드 추가
+
 void SnakeGame::makeGate1()
 {
 	cou4 =cou;
@@ -540,15 +594,37 @@ void SnakeGame::passing()
 		isPassing=true;
 		temphead.x = gate2.x;
 		temphead.y = gate2.y;
-		checkDirection(temphead); // 가능한 방향 찾기 후 방향설정 , 해당 방향으로 이동 구현
-		if (direction == 'l')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x-1, temphead.y)); } 
-		else if (direction == 'r')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x+1, temphead.y)); }
-		else if (direction == 'u')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y-1)); }
-		else if (direction == 'd')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y+1)); }
+		checkDirection(temphead); 
+	if (direction == 'l')
+	{
+		snake.insert(snake.begin(), CharPosition(temphead.x-1, temphead.y)); 
+		move(snake[0].y, snake[0].x);
+		addch('<'); 
+		refresh();
+
+	} 
+	else if (direction == 'r')
+	{ 
+		snake.insert(snake.begin(), CharPosition(temphead.x+1, temphead.y)); 		
+		move(snake[0].y, snake[0].x);
+		addch('>'); 
+		refresh();		
+	}
+	else if (direction == 'u')
+	{
+		snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y-1)); 
+		move(snake[0].y, snake[0].x);
+		addch('^'); 
+		refresh();	
+	}
+	else if (direction == 'd')
+	{ 
+		snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y+1)); 
+		
+		move(snake[0].y, snake[0].x);
+		addch('v'); 
+		refresh();		
+	}
 
 		finish.x = snake[0].x;
 		finish.y = snake[0].y;
@@ -565,17 +641,37 @@ void SnakeGame::passing()
 		
 		temphead.x = gate1.x;
 		temphead.y = gate1.y;
-		checkDirection(temphead); // 가능한 방향 찾기 후 방향설정
+		checkDirection(temphead); 
+	if (direction == 'l')
+	{
+		snake.insert(snake.begin(), CharPosition(temphead.x-1, temphead.y)); 
+		move(snake[0].y, snake[0].x);
+		addch('<'); 
+		refresh();
 
-		if (direction == 'l')
-	
-			{ snake.insert(snake.begin(), CharPosition(temphead.x-1, temphead.y)); } 
-		else if (direction == 'r')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x+1, temphead.y)); }
-		else if (direction == 'u')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y-1)); }
-		else if (direction == 'd')
-			{ snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y+1)); }
+	} 
+	else if (direction == 'r')
+	{ 
+		snake.insert(snake.begin(), CharPosition(temphead.x+1, temphead.y)); 		
+		move(snake[0].y, snake[0].x);
+		addch('>'); 
+		refresh();		
+	}
+	else if (direction == 'u')
+	{
+		snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y-1)); 
+		move(snake[0].y, snake[0].x);
+		addch('^'); 
+		refresh();	
+	}
+	else if (direction == 'd')
+	{ 
+		snake.insert(snake.begin(), CharPosition(temphead.x, temphead.y+1)); 
+		
+		move(snake[0].y, snake[0].x);
+		addch('v'); 
+		refresh();		
+	}
 
 		finish.x = snake[0].x;
 		finish.y = snake[0].y;
@@ -613,21 +709,30 @@ void SnakeGame::PlayGame()
 				if (cou == cou4+100  && !isPassing)
 				{	
 					move(gate1.y,gate1.x);
-					addch(edgechar);
+					attron(COLOR_PAIR(2));
+					addch(' ');
+					attroff(COLOR_PAIR(2));
 					makeGate1();
 				
 					move(gate2.y,gate2.x);
-					addch(edgechar);
+					attron(COLOR_PAIR(2));
+					addch(' ');
+					attroff(COLOR_PAIR(2));
 					makeGate2();
 				}
-				if (isPassed  && !isPassing) //테스트 필요
+				if (isPassed  && !isPassing) 
 				{	isPassed = false;
 					move(gate1.y,gate1.x);
-					addch(edgechar);
+					attron(COLOR_PAIR(2));
+					addch(' ');
+					attroff(COLOR_PAIR(2));
 					makeGate1();
 				
 					move(gate2.y,gate2.x);
-					addch(edgechar);
+					attron(COLOR_PAIR(2));
+					addch(' ');
+					attroff(COLOR_PAIR(2));
+					
 					makeGate2();
 					
 				}
@@ -640,13 +745,18 @@ void SnakeGame::PlayGame()
 					
 				}
 
-		passing(); //이동확인필요	
+		passing(); 	
 
         if (FatalCollision())
         {
-            move((maxheight-2)/2,(maxwidth-8)/2);
-            printw("GAME OVER");
-            break;
+            initscr();	
+			start_color();
+			init_pair(1, COLOR_RED, COLOR_WHITE);
+			move((maxheight-2)/2,(maxwidth-8)/2);
+			attron(COLOR_PAIR(1));
+			printw("GAME OVER");
+			attroff(COLOR_PAIR(1));
+			break;
         }
 		
         GetsGrowth();
@@ -666,6 +776,5 @@ void SnakeGame::PlayGame()
 				
     }
 }
-
 
 
