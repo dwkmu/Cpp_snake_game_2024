@@ -371,7 +371,7 @@ void SnakeGame::boardUpdate()
 	mvprintw(10,60,"|");mvprintw(10,97,"|");
 	mvprintw(11,60,"|");mvprintw(11,97,"|");
 	mvprintw(12,60,"|");mvprintw(12,97,"|");
-	mvprintw(13,60,"|");mvprintw(13,97,"|");
+	mvprintw(13,60,"|");mvprintw(13,70, "CURRENT STAGE : "); mvprintw(13,86,"%d", currentStage+1);mvprintw(13,97,"|");
 	mvprintw(14,60,"|");mvprintw(14,97,"|");
 	mvprintw(15, 60, "|-*-*-*-*-*-MISSION-BOARD-*-*-*-*-*-*|");
 	
