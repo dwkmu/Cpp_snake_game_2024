@@ -19,7 +19,7 @@ CharPosition::CharPosition()
 	y = 0;
 }
 
-SnakeGame::SnakeGame() :currentStage(0){
+SnakeGame::SnakeGame() :currentStage(){
 	snake_map = new SnakeMap(1);
 	
 	InitStage();
@@ -69,6 +69,7 @@ void SnakeGame::DrawWindow()
 	initscr();
 	start_color();
 	init_pair(2,COLOR_GREEN,COLOR_GREEN);
+	init_pair(10,COLOR_RED,COLOR_RED);
 	for (int i = 0; i < maxheight; i++)
 	{
 		for (int j = 0; j < maxwidth; j++)
@@ -453,7 +454,7 @@ void SnakeGame::InitStage() {
 	
 	GameWin=false;
 
-	del = 100000;
+	del = 90000;
 	bool bEatsFruit = 0;
 	bool bEatsPoison = 0;
 	direction = 'l';
